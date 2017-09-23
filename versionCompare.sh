@@ -5,8 +5,6 @@
 
 git clone $1
 git_dir=$(echo $1 | awk '{split($1, Arr, /[/.]/); print Arr[length(Arr)-1]}')
-echo "======================================"
-echo $git_dir
 cd $git_dir
 git tag > tmp1.txt
 mv tmp1.txt ../
@@ -15,6 +13,8 @@ cd ../
 # Whether npm package name is the same as git repo
 if [ $# -eq 2 ]; then
   npm show $2 versions > tmp2.txt
+else
+  npm show $git_dir versions > tmp2.txt
 fi
 
 # count lines of the result of npm show
