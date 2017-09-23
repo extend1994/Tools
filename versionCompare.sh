@@ -4,7 +4,7 @@
 # tmp2 is for npm
 
 git clone $1
-git_dir=$(echo $1 | awk '{split($1, Arr, /[/.]/); print Arr[length(Arr)-1]}')
+git_dir=$(echo $1 | awk '{split($1, Arr, /[/]/); print Arr[length(Arr)]}')
 cd $git_dir
 git tag > tmp1.txt
 mv tmp1.txt ../
