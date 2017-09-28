@@ -27,5 +27,4 @@ tree ajax/libs/$2
 # clean spare files
 git clean -df
 cat ajax/libs/$2/package.json | git s ajax/libs/$2/$(jq .version -r)
-git s
 echo -e "\033[32mdone!\033[0m"

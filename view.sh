@@ -26,5 +26,4 @@ cat ajax/libs/$2/package.json | echo -e "\033[33majax/libs/$2/$(jq .version -r) 
 tree ajax/libs/$2/
 git clean -df
 cat ajax/libs/$2/package.json | git s ajax/libs/$2/$(jq .version -r)
-git s
 echo -e "\033[32mdone!\033[0m"
