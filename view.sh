@@ -7,8 +7,8 @@ if [ $# -lt 2 ]; then
 fi
 
 if [ $flag -eq 1 ]; then
-  branchExist=$(git br| grep $2)
-  if [ "$branchExist" != "" ] && [ $(git rev-parse --abbrev-ref HEAD) != $2 ]; then
+
+  if [ $(git br --list $2) ] && [ $(git rev-parse --abbrev-ref HEAD) != $2 ]; then
     echo -e "\033[33mBranch $2 exists! Now ready to checkout...\033[0m"
     git co $2
     echo -e "\033[32mCheckout to the branch $2 and update to latest status\033[0m"
@@ -19,7 +19,7 @@ if [ $flag -eq 1 ]; then
     git br -m $2
   fi
 
-  libCheckout=$(grep $2 .git/info/sparse-checkout)
+  libCheckout=$(grep $2 -w .git/info/sparse-checkout)
   if [ "$libCheckout" == "" ]; then
     echo "/ajax/libs/$2/*" >> .git/info/sparse-checkout
   fi
