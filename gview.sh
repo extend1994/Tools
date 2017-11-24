@@ -24,6 +24,7 @@ if [ $flag -eq 1 ]; then
     echo "/ajax/libs/$2/*" >> .git/info/sparse-checkout
   fi
   git rsh
+  git pom
   #libAbsolutePath=$(readlink ~/repos/cdnjs/ajax/libs/$2/ -nf)
   ./tools/fixFormat.js
   echo "fixed"
