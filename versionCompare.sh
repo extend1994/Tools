@@ -26,20 +26,18 @@ if [ $flag -eq 1 ]; then
   # count lines of the result of npm show
   lines=$(wc -l tmp2.txt | awk '{print $1}')
   # Elimate spare symbols and let the result be the same as $(git tag)
-  sed -i "s/v//" tmp1.txt
-  sed -i "s/\[//" tmp2.txt
-  sed -i "s/\]//" tmp2.txt
+  sed -i "s/v//g" tmp1.txt
+  sed -i "s/\[//g" tmp2.txt
+  sed -i "s/\]//g" tmp2.txt
 
   if [ $lines != 1 ]; then
-    sed -i "s/,//" tmp2.txt
+    sed -i "s/,//g" tmp2.txt
   else
-    sed -i "s/,/\n/" tmp2.txt
+    sed -i "s/,/\n/g" tmp2.txt
   fi
 
-  sed -i "s/'//" tmp2.txt
-  sed -i "s/'//" tmp2.txt
-  sed -i "s/\ //" tmp2.txt
-  sed -i "s/\ //" tmp2.txt
+  sed -i "s/'//g" tmp2.txt
+  sed -i "s/\ //g" tmp2.txt
 
   # Go compare
   vimdiff tmp1.txt tmp2.txt
