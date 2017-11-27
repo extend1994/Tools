@@ -40,7 +40,13 @@ if [ $flag -eq 1 ]; then
   sed -i "s/\ //g" tmp2.txt
 
   # Go compare
-  vimdiff tmp1.txt tmp2.txt
+  tmp1_lines=$(wc -l tmp1.txt | awk '{print $1}')
+  tmp2_lines=$(wc -l tmp2.txt | awk '{print $1}')
+  if [ $tmp1_lines -ge $tmp2_lines ]; then
+    vimdiff tmp1.txt tmp2.txt
+  else
+    vimdiff tmp2.txt tmp1.txt
+  fi
   # Remove all temporary files and folders.
   rm $git_dir tmp1.txt tmp2.txt -rf
 fi
