@@ -42,7 +42,15 @@ if [ $flag -eq 1 ]; then
   ./tools/fixFormat.js
   cat ajax/libs/$lib_name/package.json | rm ajax/libs/$lib_name/$(jq .version -r) -rf
   cat ajax/libs/$lib_name/package.json | echo -e "\033[33majax/libs/$lib_name/$(jq .version -r) is removed\033[0m"
-  ./auto-update.js run $lib_name
+
+  # Check source is npm or git repo
+  source=$(git log -$4 | grep npm)
+  if [ -n "$source" ]; then
+    ./auto-update.js run $lib_name
+  else
+    ./../autoupdate/autoupdate.js run $2
+  fi
+
   # clean spare files
   tree ajax/libs/$lib_name/
   git clean -df
