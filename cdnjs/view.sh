@@ -1,27 +1,34 @@
 # parameters
-# @prNum @branch/folder name @commit_nbr @contributor
+# @prNum @lib_name @commit_nbr @branch_name @contributor
 flag=1
 if [ $# -lt 2 ]; then
-  echo "Usage: . view.sh <prNum> <branch/folder name> <commit_nbr> [contributor]"
+  echo "Usage: . view.sh <prNum> <lib_name> <commit_nbr> [branch_name] [contributor]"
   flag=0
+fi
+
+lib_name=$2
+branch=$2
+
+if [ $# -ge 4 ] && [ $branch != $4 ]; then
+  branch=$4
 fi
 
 if [ $flag -eq 1 ]; then
 
-  if [ $(git br --list $2) ] && [ $(git rev-parse --abbrev-ref HEAD) != $2 ]; then
-    echo -e "\033[33mBranch $2 exists! Now ready to checkout...\033[0m"
-    git co $2
-    echo -e "\033[32mCheckout to the branch $2 and update to latest status\033[0m"
-    git pull git@github.com:$4/cdnjs.git  $2:$2 --rebase -f
+  if [ $(git br --list $branch) ] && [ $(git rev-parse --abbrev-ref HEAD) != $branch ]; then
+    echo -e "\033[33mBranch $branch exists! Now ready to checkout...\033[0m"
+    git co $branch
+    echo -e "\033[32mCheckout to the branch $branch and update to latest status\033[0m"
+    git pull git@github.com:$5/cdnjs.git  $branch:$branch --rebase -f
   else
     git fetchpr $1
     git co $1
-    git br -m $2
+    git br -m $branch
   fi
 
-  libCheckout=$(grep $2 -w .git/info/sparse-checkout)
+  libCheckout=$(grep $lib_name -w .git/info/sparse-checkout)
   if [ "$libCheckout" == "" ]; then
-    echo "/ajax/libs/$2/*" >> .git/info/sparse-checkout
+    echo "/ajax/libs/$lib_name/*" >> .git/info/sparse-checkout
   fi
   git rsh
 
@@ -33,12 +40,12 @@ if [ $flag -eq 1 ]; then
 
   #libAbsolutePath=$(readlink ~/repos/cdnjs/ajax/libs/$2/ -nf)
   ./tools/fixFormat.js
-  cat ajax/libs/$2/package.json | rm ajax/libs/$2/$(jq .version -r) -rf
-  cat ajax/libs/$2/package.json | echo -e "\033[33majax/libs/$2/$(jq .version -r) is removed\033[0m"
-  ./auto-update.js run $2
+  cat ajax/libs/$lib_name/package.json | rm ajax/libs/$lib_name/$(jq .version -r) -rf
+  cat ajax/libs/$lib_name/package.json | echo -e "\033[33majax/libs/$lib_name/$(jq .version -r) is removed\033[0m"
+  ./auto-update.js run $lib_name
   # clean spare files
-  tree ajax/libs/$2/
+  tree ajax/libs/$lib_name/
   git clean -df
-  cat ajax/libs/$2/package.json | git s ajax/libs/$2/$(jq .version -r)
+  cat ajax/libs/$lib_name/package.json | git s ajax/libs/$lib_name/$(jq .version -r)
   echo -e "\033[32mdone!\033[0m"
 fi
