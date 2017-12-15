@@ -6,8 +6,11 @@ if [ $# -lt 2 ]; then
   flag=0
 fi
 
+prNum=$1
 lib_name=$2
 branch=$2
+commit_nbr=$3
+contributor=$5
 
 if [ $# -ge 4 ] && [ $branch != $4 ]; then
   branch=$4
@@ -19,10 +22,10 @@ if [ $flag -eq 1 ]; then
     echo -e "\033[33mBranch $branch exists! Now ready to checkout...\033[0m"
     git co $branch
     echo -e "\033[32mCheckout to the branch $branch and update to latest status\033[0m"
-    git pull git@github.com:$5/cdnjs.git  $branch:$branch --rebase -f
+    git pull git@github.com:$contributor/cdnjs.git  $branch:$branch --rebase -f
   else
-    git fetchpr $1
-    git co $1
+    git fetchpr $prNum
+    git co $prNum
     git br -m $branch
   fi
 
@@ -32,8 +35,8 @@ if [ $flag -eq 1 ]; then
   fi
   git rsh
 
-  relative_min=$(git show -s --format=%cr HEAD~$3 | grep min)
-  relative_hour=$(git show -s --format=%cr HEAD~$3 | grep hour)
+  relative_min=$(git show -s --format=%cr HEAD~$commit_nbr | grep min)
+  relative_hour=$(git show -s --format=%cr HEAD~$commit_nbr | grep hour)
   if [ "$relative_min" == "" ] && [ "$relative_hour" == "" ]; then
     git pull origin master:master --rebase
   fi
@@ -44,11 +47,11 @@ if [ $flag -eq 1 ]; then
   cat ajax/libs/$lib_name/package.json | echo -e "\033[33majax/libs/$lib_name/$(jq .version -r) is removed\033[0m"
 
   # Check source is npm or git repo
-  source=$(git log -$4 | grep npm)
+  source=$(git log -$commit_nbr | grep npm)
   if [ -n "$source" ]; then
     ./auto-update.js run $lib_name
   else
-    ./../autoupdate/autoupdate.js run $2
+    ./../autoupdate/autoupdate.js run $lib_name
   fi
 
   # clean spare files
