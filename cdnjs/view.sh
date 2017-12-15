@@ -15,14 +15,14 @@ contributor=$5
 if [ $# -ge 4 ] && [ $branch != $4 ]; then
   branch=$4
 fi
-
 if [ $flag -eq 1 ]; then
-
-  if [ $(git br --list $branch) ] && [ $(git rev-parse --abbrev-ref HEAD) != $branch ]; then
+  if [ -n "$(git br --list $branch)" ] && [ $(git rev-parse --abbrev-ref HEAD) != $branch ]; then
     echo -e "\033[33mBranch $branch exists! Now ready to checkout...\033[0m"
     git co $branch
     echo -e "\033[32mCheckout to the branch $branch and update to latest status\033[0m"
     git pull git@github.com:$contributor/cdnjs.git  $branch:$branch --rebase -f
+  elif [ $(git rev-parse --abbrev-ref HEAD) == $branch ]; then
+    echo -e "\033[33mAlready on the branch! Continue to review...\033[0m"
   else
     git fetchpr $prNum
     git co $prNum
