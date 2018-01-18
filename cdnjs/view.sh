@@ -12,6 +12,20 @@ branch=$2
 commit_nbr=$3
 contributor=$5
 
+# Check if there is a pull request for the same library
+curl -i "https://api.github.com/repos/cdnjs/cdnjs/pulls?state=open&per_page=100" > tmp.txt
+all_pr_pages=$(cat tmp.txt | grep -o "page=[0-9]*" | sed -n '2p' | cut -d '=' -f 2)
+i=1
+while [ ${i} != $all_pr_pages]; do
+  curl "https://api.github.com/repos/cdnjs/cdnjs/pulls?state=open&per_page=100" > tmp.txt
+  pr_query=$(cat tmp.txt | jq -r '.[] | .title' | grep $lib_name)
+  if [ $pr_query -ne "" ]; then
+    flag=0
+    break
+  fi
+  i=$(($i+1))
+done
+
 if [ $# -ge 4 ] && [ $branch != $4 ]; then
   branch=$4
 fi
