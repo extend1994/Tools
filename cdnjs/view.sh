@@ -37,9 +37,9 @@ if [ $flag -eq 1 ]; then
 
   relative_min=$(git show -s --format=%cr HEAD~$commit_nbr | grep min)
   relative_hour=$(git show -s --format=%cr HEAD~$commit_nbr | grep hour)
-  if [ "$relative_min" == "" ] && [ "$relative_hour" == "" ]; then
-    git pull origin master:master --rebase
-  fi
+  #if [ "$relative_min" == "" ] && [ "$relative_hour" == "" ]; then
+  #  git pull origin master:master --rebase
+  #fi
 
   #libAbsolutePath=$(readlink ~/repos/cdnjs/ajax/libs/$2/ -nf)
   ./tools/fixFormat.js
