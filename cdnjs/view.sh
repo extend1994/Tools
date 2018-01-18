@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # parameters
 # @prNum @lib_name @commit_nbr @branch_name @contributor
 flag=1

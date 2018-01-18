@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # @libraryName @source: git/npm @package.json url
 flag=1
 if [ $# -ne 3 ]; then

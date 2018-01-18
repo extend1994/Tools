@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # parameters
 # @git_clone_url @npm_name
 # tmp1 is for git
