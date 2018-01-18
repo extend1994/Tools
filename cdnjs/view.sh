@@ -27,6 +27,13 @@ while [ $i != $all_pr_pages ] && [ $flag -eq 1 ]; do
   i=$(($i+1))
 done
 
+if [ $flag -eq 1 ];then
+  echo "Checking if cdnjs has hosted the requested library"
+  curl "https://api.cdnjs.com/libraries?search=$lib_name&fields=name" | jq '.[] | .[].name'
+  echo "Enter 1 to continue or 0 to break"
+  read flag
+fi
+
 if [ $# -ge 4 ] && [ $branch != $4 ]; then
   branch=$4
 fi
