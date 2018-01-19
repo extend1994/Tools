@@ -8,6 +8,11 @@ flag=1
 if [ $# -lt 2 ]; then
   echo "Usage: . view.sh <prNum> <lib_name> <commit_nbr> [branch_name] [contributor]"
   flag=0
+else
+  echo.BoldCyan "Checking if there is a pull request for the same library"
+  curl -i -s "https://api.github.com/repos/cdnjs/cdnjs/pulls?state=open&per_page=100" > tmp.txt
+  all_pr_pages=$(cat tmp.txt | grep -o "page=[0-9]*" | sed -n '2p' | cut -d '=' -f 2)
+  i=1
 fi
 
 prNum=$1
@@ -16,12 +21,8 @@ branch=$2
 commit_nbr=$3
 contributor=$5
 
-curl -i -q "https://api.github.com/repos/cdnjs/cdnjs/pulls?state=open&per_page=100" > tmp.txt
-all_pr_pages=$(cat tmp.txt | grep -o "page=[0-9]*" | sed -n '2p' | cut -d '=' -f 2)
-i=1
-echo.BoldCyan "Checking if there is a pull request for the same library"
-while [ $i != $all_pr_pages ] && [ $flag -eq 1 ]; do
-  curl -q "https://api.github.com/repos/cdnjs/cdnjs/pulls?state=open&page=$i&per_page=100" > tmp.txt
+while [ $flag -eq 1 ] && [ $i != $all_pr_pages ]; do
+  curl -s "https://api.github.com/repos/cdnjs/cdnjs/pulls?state=open&page=$i&per_page=100" > tmp.txt
   pr_query=$(cat tmp.txt | jq -r '.[] | .title' | grep $lib_name)
   if [ $pr_query -ne "" ]; then
     echo $pr_query
@@ -33,7 +34,7 @@ done
 
 if [ $flag -eq 1 ];then
   echo.BoldCyan "Checking if cdnjs has hosted the requested library"
-  curl -q "https://api.cdnjs.com/libraries?search=$lib_name&fields=name" | jq '.[] | .[].name'
+  curl -s "https://api.cdnjs.com/libraries?search=$lib_name&fields=name" | jq '.[] | .[].name'
   echo.BoldYellow "Enter 1 to continue or 0 to break"
   read flag
 fi
