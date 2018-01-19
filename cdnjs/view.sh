@@ -24,7 +24,7 @@ contributor=$5
 while [ $flag -eq 1 ] && [ $i != $all_pr_pages ]; do
   curl -s "https://api.github.com/repos/cdnjs/cdnjs/pulls?state=open&page=$i&per_page=100" > tmp.txt
   pr_query=$(cat tmp.txt | jq -r '.[] | .title' | grep $lib_name)
-  if [ $pr_query -ne "" ]; then
+  if [ -n "$pr_query" ]; then
     echo $pr_query
     echo.BoldYellow "Similar PR found, enter 1 to continue or 0 to break"
     read flag
