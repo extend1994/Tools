@@ -18,7 +18,7 @@ contributor=$5
 
 if [ $flag -eq 1 ];then
   echo.BoldCyan "Checking if cdnjs has hosted the requested library"
-  curl -s "https://api.cdnjs.com/libraries?search=$lib_name&fields=name" | jq '.[] | .[].name'
+  curl -s "https://api.cdnjs.com/libraries?search=$lib_name&fields=name" | jq '.[]'
   echo.BoldYellow "Enter 1 to continue or 0 to break"
   read flag
 fi
