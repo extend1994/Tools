@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 # parameters
 # @prNum @lib_name @commit_nbr @branch_name @contributor
+MYPATH=$(dirname "$0")
+. "$MYPATH/../ColorEchoForShell/dist/ColorEcho.bash"
+
 flag=1
 if [ $# -lt 2 ]; then
   echo "Usage: . view.sh <prNum> <lib_name> <commit_nbr> [branch_name] [contributor]"
@@ -16,22 +19,22 @@ contributor=$5
 curl -i "https://api.github.com/repos/cdnjs/cdnjs/pulls?state=open&per_page=100" > tmp.txt
 all_pr_pages=$(cat tmp.txt | grep -o "page=[0-9]*" | sed -n '2p' | cut -d '=' -f 2)
 i=1
-echo "Checking if there is a pull request for the same library"
+echo.BoldCyan "Checking if there is a pull request for the same library"
 while [ $i != $all_pr_pages ] && [ $flag -eq 1 ]; do
   curl "https://api.github.com/repos/cdnjs/cdnjs/pulls?state=open&per_page=100" > tmp.txt
   pr_query=$(cat tmp.txt | jq -r '.[] | .title' | grep $lib_name)
   if [ $pr_query -ne "" ]; then
     echo $pr_query
-    echo "Similar PR found, enter 1 to continue or 0 to break"
+    echo.BoldYellow "Similar PR found, enter 1 to continue or 0 to break"
     read flag
   fi
   i=$(($i+1))
 done
 
 if [ $flag -eq 1 ];then
-  echo "Checking if cdnjs has hosted the requested library"
+  echo.BoldCyan "Checking if cdnjs has hosted the requested library"
   curl "https://api.cdnjs.com/libraries?search=$lib_name&fields=name" | jq '.[] | .[].name'
-  echo "Enter 1 to continue or 0 to break"
+  echo.BoldYellow "Enter 1 to continue or 0 to break"
   read flag
 fi
 
@@ -40,12 +43,12 @@ if [ $# -ge 4 ] && [ $branch != $4 ]; then
 fi
 if [ $flag -eq 1 ]; then
   if [ -n "$(git br --list $branch)" ] && [ $(git rev-parse --abbrev-ref HEAD) != $branch ]; then
-    echo -e "\033[33mBranch $branch exists! Now ready to checkout...\033[0m"
+    echo.BoldYellow "Branch $branch exists! Now ready to checkout..."
     git co $branch
-    echo -e "\033[32mCheckout to the branch $branch and update to latest status\033[0m"
+    echo.Green "Checkout to the branch $branch and update to latest status"
     git pull git@github.com:$contributor/cdnjs.git  $branch:$branch --rebase -f
   elif [ $(git rev-parse --abbrev-ref HEAD) == $branch ]; then
-    echo -e "\033[33mAlready on the branch! Continue to review...\033[0m"
+    echo.Green "Already on the branch! Continue to review..."
   else
     git fetchpr $prNum
     git co $prNum
@@ -67,7 +70,7 @@ if [ $flag -eq 1 ]; then
   #libAbsolutePath=$(readlink ~/repos/cdnjs/ajax/libs/$2/ -nf)
   ./tools/fixFormat.js
   cat ajax/libs/$lib_name/package.json | rm ajax/libs/$lib_name/$(jq .version -r) -rf
-  cat ajax/libs/$lib_name/package.json | echo -e "\033[33majax/libs/$lib_name/$(jq .version -r) is removed\033[0m"
+  cat ajax/libs/$lib_name/package.json | echo.Orange "ajax/libs/$lib_name/$(jq .version -r) is removed"
 
   # Check source is npm or git repo
   source=$(git log -$commit_nbr | grep npm)
@@ -81,5 +84,5 @@ if [ $flag -eq 1 ]; then
   tree ajax/libs/$lib_name/
   git clean -df
   cat ajax/libs/$lib_name/package.json | git s ajax/libs/$lib_name/$(jq .version -r)
-  echo -e "\033[32mdone!\033[0m"
+  echo.BoldGreen "All done!"
 fi
