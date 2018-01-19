@@ -6,7 +6,7 @@ MYPATH=$(dirname "$0")
 
 flag=1
 if [ $# -lt 2 ]; then
-  echo "Usage: . view.sh <prNum> <lib_name> <commit_nbr> [branch_name] [contributor]"
+  echo "Usage: ./<path_to>/view.sh <prNum> <lib_name> <commit_nbr> [branch_name] [contributor]"
   flag=0
 else
   echo.BoldCyan "Checking if there is a pull request for the same library"

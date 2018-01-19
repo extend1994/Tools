@@ -5,7 +5,7 @@
 # tmp2 is for npm
 flag=1
 if [ $# -lt 1 ]; then
-  echo "Usage: . versionCompare.sh <git_url> <npm_name>"
+  echo "Usage: ./<path_to>/versionCompare.sh <git_url> <npm_name>"
   flag=0
 fi
 

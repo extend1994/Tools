@@ -5,7 +5,7 @@ MYPATH=$(dirname "$0")
 
 flag=1
 if [ $# -ne 3 ]; then
-  echo "Usage: . addLibrary.sh <libName> <source> <package.json url>"
+  echo "Usage: ./<path_to>/addLibrary.sh <libName> <source> <package.json url>"
   flag=0
 fi
 
