@@ -27,7 +27,7 @@ else
   fi
 
   tree ajax/libs/$libName/
-  cat ajax/libs/$libName/package.json | rm -rf ajax/libs/$libName/!(package.json|$(jq .version -r))
+  cat ajax/libs/$libName/package.json | rm -rf ajax/libs/$libName/\!\(package.json|$(jq .version -r)\)
   echo.Green "Checking everything is okay and add the files..."
   npm t && git add . && git ci && git lgs
 fi
