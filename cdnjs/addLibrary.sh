@@ -3,30 +3,31 @@
 MYPATH=$(dirname "$0")
 . "$MYPATH/../ColorEchoForShell/dist/ColorEcho.bash"
 
-flag=1
 if [ $# -ne 3 ]; then
-  echo "Usage: ./<path_to>/addLibrary.sh <libName> <source> <package.json url>"
-  flag=0
-fi
+  echo.Yellow "Usage: ./<path_to>/addLibrary.sh <libName> <source> <package.json url>"
+else
 
-if [ $flag -eq 1 ]; then
+  libName=$1
+  src=$2
+  url=$3
+
   if [ $(git rev-parse --abbrev-ref HEAD) != $1 ]; then
     echo.Yellow "Checking out new branch from master"
-    git cob $1 master
+    git cob $libName master
   fi
-  mkdir ajax/libs/$1
-  wget $3 -O ajax/libs/$1/package.json
+  mkdir ajax/libs/$libName
+  wget $url -O ajax/libs/$libName/package.json
   ./tools/fixFormat.js
-  vim ajax/libs/$1/package.json
+  vim ajax/libs/$libName/package.json
 
-  if [ $2 == 'git' ]; then
-    ./../autoupdate/autoupdate.js run $1
+  if [ $src == 'git' ]; then
+    ./../autoupdate/autoupdate.js run $libName
   else
-    ./auto-update.js run $1
+    ./auto-update.js run $libName
   fi
 
-  tree ajax/libs/$1/
-  cat ajax/libs/$1/package.json | rm ajax/libs/$1/!(package.json|$(jq .version -r)) -rf
+  tree ajax/libs/$libName/
+  cat ajax/libs/$libName/package.json | rm -rf ajax/libs/$libName/!(package.json|$(jq .version -r))
   echo.Green "Checking everything is okay and add the files..."
   npm t && git add . && git ci && git lgs
 fi
