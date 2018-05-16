@@ -13,7 +13,7 @@ else
 
   if [ $(git rev-parse --abbrev-ref HEAD) != $1 ]; then
     echo.Yellow "Checking out new branch from master"
-    git cob $libName master
+    git checkout -b  $libName master
   fi
   mkdir ajax/libs/$libName
   wget $url -O ajax/libs/$libName/package.json
@@ -29,5 +29,5 @@ else
   tree ajax/libs/$libName/
   cat ajax/libs/$libName/package.json | rm -rf ajax/libs/$libName/\!\(package.json|$(jq .version -r)\)
   echo.Green "Checking everything is okay and add the files..."
-  npm t && git add . && git ci && git lgs
+  npm t && git add . && git commit -v && git log --summary --stat
 fi
