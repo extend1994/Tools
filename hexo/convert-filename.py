@@ -6,6 +6,9 @@ def getTitle(firstLine):
   title = '-'.join(strs.split(' '))
   return title
 
+"""
+Get and use "title" field in the .md files to be replace garbled filename
+"""
 if __name__ == "__main__":
   dirName = sys.argv[1]
   for root,dirs,fileNames in os.walk(dirName):
