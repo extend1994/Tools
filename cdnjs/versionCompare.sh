@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # parameters
 # @git_clone_url @npm_name
-# tmp1 is for git
-# tmp2 is for npm
+# git-ver is for git
+# npm-ver is for npm
 flag=1
 if [ $# -lt 1 ]; then
   echo "Usage: ./<path_to>/versionCompare.sh <git_url> <npm_name>"
@@ -13,41 +13,41 @@ if [ $flag -eq 1 ]; then
   git clone $1
   git_dir=$(echo $1 | awk '{split($1, Arr, /[/]/); print Arr[length(Arr)]}')
   cd $git_dir
-  git tag > tmp1.txt
-  mv tmp1.txt ../
+  git tag > git-ver.txt
+  mv git-ver.txt ../
   cd ../
 
   # Whether npm package name is the same as git repo
   if [ $# -eq 2 ]; then
-    npm show $2 versions > tmp2.txt
+    npm show $2 versions > npm-ver.txt
   else
-    npm show $git_dir versions > tmp2.txt
+    npm show $git_dir versions > npm-ver.txt
   fi
 
   # count lines of the result of npm show
-  lines=$(wc -l tmp2.txt | awk '{print $1}')
+  lines=$(wc -l npm-ver.txt | awk '{print $1}')
   # Elimate spare symbols and let the result be the same as $(git tag)
-  sed -i "s/v//g" tmp1.txt
-  sed -i "s/\[//g" tmp2.txt
-  sed -i "s/\]//g" tmp2.txt
+  sed -i "s/v//g" git-ver.txt
+  sed -i "s/\[//g" npm-ver.txt
+  sed -i "s/\]//g" npm-ver.txt
 
   if [ $lines != 1 ]; then
-    sed -i "s/,//g" tmp2.txt
+    sed -i "s/,//g" npm-ver.txt
   else
-    sed -i "s/,/\n/g" tmp2.txt
+    sed -i "s/,/\n/g" npm-ver.txt
   fi
 
-  sed -i "s/'//g" tmp2.txt
-  sed -i "s/\ //g" tmp2.txt
+  sed -i "s/'//g" npm-ver.txt
+  sed -i "s/\ //g" npm-ver.txt
 
   # Go compare
-  tmp1_lines=$(wc -l tmp1.txt | awk '{print $1}')
-  tmp2_lines=$(wc -l tmp2.txt | awk '{print $1}')
-  if [ $tmp1_lines -ge $tmp2_lines ]; then
-    vimdiff tmp1.txt tmp2.txt
+  git_ver_lines=$(wc -l git-ver.txt | awk '{print $1}')
+  npm_ver_lines=$(wc -l npm-ver.txt | awk '{print $1}')
+  if [ $git_ver_lines -ge $npm_ver_lines ]; then
+    vimdiff git-ver.txt npm-ver.txt
   else
-    vimdiff tmp2.txt tmp1.txt
+    vimdiff npm-ver.txt git-ver.txt
   fi
   # Remove all temporary files and folders.
-  rm $git_dir tmp1.txt tmp2.txt -rf
+  rm $git_dir git-ver.txt npm-ver.txt -rf
 fi
