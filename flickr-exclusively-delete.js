@@ -14,6 +14,16 @@ var auth_flickr = new Flickr(oauth.plugin(
   process.env.FLICKR_OAUTH_TOKEN_SECRET
 ));
 
+function getPhotosetsId(){
+  flickr.photosets.getList({
+    user_id: "99605377@N04"
+  }).then(function (res){
+    res.body.photosets.photoset.forEach( set => {
+      log(`${chalk.yellow.bold(set.id)} ${chalk.yellow(set.title._content)}`)
+    })
+  })
+}
+
 function getPhotos(photoset_id) {
   flickr.photosets.getPhotos({
     user_id: "99605377@N04",
