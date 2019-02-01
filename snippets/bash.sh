@@ -19,3 +19,6 @@ NUM_CORES=$(grep -c ^processor /proc/cpuinfo)
 a=1
 b=2
 [[ ${a} > ${b} ]] && echo "a > b" || echo "b >= a"
+
+# Sync time
+sudo hwclock | awk '{print $1" "$2" "$3" "$4" "$5" "$6" "$7}' | xargs -i sudo date -s {}
